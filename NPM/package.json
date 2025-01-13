@@ -10,6 +10,8 @@
   "author": "Vivek vyas",
   "license": "ISC",
   "dependencies": {
+    "inquirer": "^12.3.1",
+    "qr-image": "^3.2.0",
     "superheroes": "^4.0.0"
   }
 }
