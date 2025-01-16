@@ -15,3 +15,8 @@ fs.readFile("./message.txt","utf8",(err, data)=>{
     if(err)throw err;
     console.log(data);
     })
+
+fs.appendFile("./message.txt" , "data to add using append" , (err)=>{
+    if(err) throw err;
+    console.log("file is updated");
+})
