@@ -10,9 +10,9 @@ const port = 8000;
 app.use(bodyParser.urlencoded({ extended: true }));
 
 function logger (req , res , next ){
-   console.log(req.body);
-  bandName = req.body["street"] + req.body["pet"];
-  next();
+  console.log(req.body);
+    req.bandName = req.body["street"] + req.body["pet"];  // Store in request object
+    next();
 }
 
 app.use(logger);
@@ -21,7 +21,7 @@ app.get("/",(req,res)=>{
 })
 app.post("/submit",(req,res)=>{
   //res.send("your band name is\n" + req.body.street )
-  res.send(`<h1>your band name is : </h1> <h2> ${bandName}</h2>
+  res.send(`<h1>your band name is : </h1> <h2> ${req.bandName}</h2>
   `)
 })
 app.listen(port, () => {
