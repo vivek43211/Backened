@@ -54,7 +54,7 @@ app.post("/add", async (req, res) => {
 
   try {
     const result = await db.query(
-      "SELECT country_code FROM countries WHERE LOWER(country_name) LIKE '%' || $1 || '%';",
+      "SELECT country_code FROM countires WHERE LOWER(country_name) LIKE '%' || $1 || '%';",
       [input.toLowerCase()]
     );
 
@@ -74,11 +74,22 @@ app.post("/add", async (req, res) => {
   }
 });
 app.post("/user", async (req, res) => {
-  if(req.body.add === "new"){
-    res.render("new.ejs")
-  }else{
-    currentUserId = req.body.user;
-    res.redirect("/");
+  try {
+    const { add, deleteUser, user } = req.body; // Rename 'delete' to 'deleteUser'
+
+    if (add === "new") {
+      return res.render("new.ejs"); // Correctly handles "add" request
+    } else if (deleteUser === "new") {
+      return res.render("delete.ejs"); // Correctly handles "delete" request
+    } else if (user) {
+      currentUserId = user; // Store user ID
+      return res.redirect("/");
+    } else {
+      return res.status(400).send("Invalid request"); // Handle unexpected cases
+    }
+  } catch (error) {
+    console.error("Error handling user action:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -94,6 +105,19 @@ app.post("/new", async (req, res) => {
   //Hint: The RETURNING keyword can return the data that was inserted.
   //https://www.postgresql.org/docs/current/dml-returning.html
 });
+
+app.post("/delete", async (req, res) => {
+  const name = req.body.name;
+  const result = await db.query("DELETE FROM users WHERE name=$1;",[name]);
+  if (result.rows === 0) {
+    return res.status(404).send("User not found");
+  }
+  res.redirect("/");
+  //Hint: The RETURNING keyword can return the data that was inserted.
+  //https://www.postgresql.org/docs/current/dml-returning.html
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
